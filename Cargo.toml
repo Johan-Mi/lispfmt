@@ -1,0 +1,13 @@
+[package]
+name = "lispfmt"
+version = "0.1.0"
+edition = "2021"
+description = "Lisp formatting as a library"
+license = "Unlicense"
+repository = "https://github.com/Johan-Mi/lispfmt"
+keywords = ["no_std", "text", "lisp", "format"]
+categories = ["no-std", "text-processing"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
