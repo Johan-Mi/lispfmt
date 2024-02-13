@@ -111,6 +111,7 @@ impl Formatter {
                 } else {
                     self.leading_space();
                 }
+                self.x += width;
                 write!(self.output, "{atom}")?;
                 self.preceded_by_expression = true;
                 self.awaiting_new_level = false;
