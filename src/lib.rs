@@ -75,7 +75,7 @@ pub fn format<'src, A: Atom>(
                 tokens.next();
             }
         }
-        formatter.token(token)?;
+        formatter.token(token, tokens.peek())?;
     }
 
     if formatter.output.ends_with(|c: char| c != '\n') {
@@ -98,16 +98,27 @@ struct Formatter {
 }
 
 impl Formatter {
-    fn token<A: Atom>(&mut self, token: Token<A>) -> Result<(), Error> {
+    fn token<A: Atom>(
+        &mut self,
+        token: Token<A>,
+        next_token: Option<&Token<A>>,
+    ) -> Result<(), Error> {
         match token {
             Token::Atom(atom) => {
                 let width = atom.width();
                 if self.awaiting_new_level {
                     self.levels.push(
-                        atom.custom_indentation()
-                            .map_or(self.x + width + 1, |indentation| {
-                                self.x + indentation - 1
-                            }),
+                        if matches!(
+                            next_token,
+                            Some(Token::NewLine | Token::Comment(_))
+                        ) {
+                            self.x + self.default_indentation - 1
+                        } else {
+                            atom.custom_indentation()
+                                .map_or(self.x + width + 1, |indentation| {
+                                    self.x + indentation - 1
+                                })
+                        },
                     );
                     self.is_operator.push(false);
                 } else {
