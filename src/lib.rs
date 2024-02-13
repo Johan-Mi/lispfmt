@@ -133,12 +133,14 @@ impl Formatter {
                 }
                 self.output.push(')');
                 self.x += 1;
-                if self.is_operator.last() == Some(&true) {
+                if !self.awaiting_new_level {
+                    if self.is_operator.last() == Some(&true) {
+                        self.levels.pop();
+                        self.is_operator.pop();
+                    }
                     self.levels.pop();
                     self.is_operator.pop();
                 }
-                self.levels.pop();
-                self.is_operator.pop();
                 self.preceded_by_expression = true;
                 self.awaiting_new_level = false;
             }
