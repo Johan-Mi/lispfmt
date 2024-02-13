@@ -70,12 +70,6 @@ pub fn format<'src, A: Atom>(
 
     let mut tokens = tokens.peekable();
     while let Some(token) = tokens.next() {
-        if matches!(
-            (&token, tokens.peek()),
-            (Token::NewLine, Some(Token::RParen))
-        ) {
-            continue;
-        }
         if matches!(token, Token::LParen) {
             while tokens.peek().is_some_and(|it| matches!(it, Token::NewLine)) {
                 tokens.next();
@@ -134,7 +128,9 @@ impl Formatter {
                 self.awaiting_new_level = true;
             }
             Token::RParen => {
-                self.leading_indentation();
+                while self.output.ends_with('\n') {
+                    self.output.pop();
+                }
                 self.output.push(')');
                 self.x += 1;
                 if self.is_operator.last() == Some(&true) {
