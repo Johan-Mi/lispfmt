@@ -170,6 +170,9 @@ impl Formatter {
             }
             Token::Comment(comment) => {
                 self.put_default_level_or_leading_space();
+                if self.awaiting_new_level {
+                    self.output.push(' ');
+                }
                 writeln!(self.output, "{comment}")?;
                 self.preceded_by_expression = false;
                 self.awaiting_new_level = false;
