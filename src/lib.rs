@@ -175,18 +175,11 @@ impl Formatter {
         Ok(())
     }
 
-    fn leading_indentation(&mut self) -> bool {
+    fn leading_space(&mut self) {
         if self.output.ends_with('\n') {
             self.x = self.levels.last().copied().unwrap_or(0);
             self.output.extend(core::iter::repeat(' ').take(self.x));
-            true
-        } else {
-            false
-        }
-    }
-
-    fn leading_space(&mut self) {
-        if !self.leading_indentation() && self.preceded_by_expression {
+        } else if self.preceded_by_expression {
             self.output.push(' ');
             self.x += 1;
         }
