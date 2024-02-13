@@ -70,12 +70,18 @@ pub fn format<'src, A: Atom>(
 
     let mut tokens = tokens.peekable();
     while let Some(token) = tokens.next() {
-        if !matches!(
+        if matches!(
             (&token, tokens.peek()),
             (Token::NewLine, Some(Token::RParen))
         ) {
-            formatter.token(token)?;
+            continue;
         }
+        if matches!(token, Token::LParen) {
+            while tokens.peek().is_some_and(|it| matches!(it, Token::NewLine)) {
+                tokens.next();
+            }
+        }
+        formatter.token(token)?;
     }
 
     if formatter.output.ends_with("\n\n") {
@@ -156,10 +162,7 @@ impl Formatter {
                 }
             }
             Token::NewLine => {
-                if !(self.output.is_empty()
-                    || self.output.ends_with("\n\n")
-                    || self.output.ends_with('('))
-                {
+                if !(self.output.is_empty() || self.output.ends_with("\n\n")) {
                     self.output.push('\n');
                     self.preceded_by_expression = false;
                     self.awaiting_new_level = false;
