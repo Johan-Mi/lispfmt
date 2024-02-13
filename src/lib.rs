@@ -78,7 +78,9 @@ pub fn format<'src, A: Atom>(
         formatter.token(token)?;
     }
 
-    if formatter.output.ends_with("\n\n") {
+    if formatter.output.ends_with(|c: char| c != '\n') {
+        formatter.output.push('\n');
+    } else if formatter.output.ends_with("\n\n") {
         formatter.output.pop();
     }
 
