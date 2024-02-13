@@ -54,8 +54,8 @@ pub enum Token<'src, A: Atom> {
 /// # Errors
 ///
 /// This function returns an error if it fails to display any of the [`Atom`]s.
-pub fn format<'src, A: Atom>(
-    tokens: &mut impl Iterator<Item = Token<'src, A>>,
+pub fn format<A: Atom>(
+    tokens: &mut dyn Iterator<Item = Token<A>>,
     default_indentation: usize,
 ) -> Result<String, Error> {
     let mut formatter = Formatter {
