@@ -101,11 +101,10 @@ impl Formatter {
             Token::Atom(atom) => {
                 let width = atom.width();
                 if self.awaiting_new_level {
-                    let old_level = self.levels.last().copied().unwrap_or(0);
                     self.levels.push(
                         atom.custom_indentation()
-                            .map_or(old_level + 2 + width, |indentation| {
-                                old_level + indentation
+                            .map_or(self.x + width + 1, |indentation| {
+                                self.x + indentation - 1
                             }),
                     );
                     self.is_operator.push(false);
@@ -194,8 +193,7 @@ impl Formatter {
 
     fn put_default_level_or_leading_space(&mut self) {
         if self.awaiting_new_level {
-            let old_level = self.levels.last().copied().unwrap_or(0);
-            self.levels.push(old_level + self.default_indentation);
+            self.levels.push(self.x + self.default_indentation - 1);
             self.is_operator.push(false);
         } else {
             self.leading_space();
